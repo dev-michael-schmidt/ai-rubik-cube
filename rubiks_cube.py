@@ -1,7 +1,9 @@
+import numpy as np
 class RubiksCube:
 
     def __init__(self):
         self.cube = [['.' for _ in range(12)] for _ in range(9)]
+        self.cube = np.array(self.cube)
         for r in range(3):
             for c in range(3):
                 self.cube[r][c] = ' '
@@ -48,3 +50,40 @@ class RubiksCube:
                 s = '{}\n{}'.format(s, row)
 
         return s
+
+    def vertical_rotate(self, slot, dir):
+        """
+
+        :slot:  str     left, middle, right
+        :dir:   str     up, down
+        """
+
+        if slot != 'left' and slot != 'middle' and slot != 'right':
+            raise
+
+        if dir != 'up' and dir != 'down':
+            raise
+
+        temp = []
+        c = 3 if slot == 'left' else 4 if slot == 'middle' else 5
+        anti_c = 14 - c
+
+        temp = [self.cube[r][c] for r in range(9)]
+        for r in range(3, 6):
+            temp.append(self.cube[r][anti_c])
+
+        temp = temp[3:] + temp[:3] if dir == 'up' else temp[-3:] + temp[:-3]
+
+        for r in range(9):
+            self.cube[r][c] = temp[r]
+
+        for r in range(3, 6):
+            self.cube[r][anti_c] = temp[r + 6]
+
+        self.cube[3:6, 0:3] = np.rot90(self.cube[3:6, 0:3])
+        if dir == 'down':
+            for _ in range(2):
+                self.cube[3:6, 0:3] = np.rot90(self.cube[3:6, 0:3])
+
+    def horizontal_rotate(self, slot):
+        pass
