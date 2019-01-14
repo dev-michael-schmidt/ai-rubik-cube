@@ -64,11 +64,13 @@ class RubiksCube:
         if dir != 'up' and dir != 'down':
             raise
 
-        temp = []
+        temp = [] # IDEA: using np slicing below ??
         c = 3 if slot == 'left' else 4 if slot == 'middle' else 5
         anti_c = 14 - c
 
-        temp = [self.cube[r][c] for r in range(9)]
+        # NOTE: probably a bug on rotations for right most group on 3x6 and 9x12 (np.rot90)??
+
+        temp = self.cube[r][c] for r in range(9)
         for r in range(3, 6):
             temp.append(self.cube[r][anti_c])
 
@@ -80,10 +82,27 @@ class RubiksCube:
         for r in range(3, 6):
             self.cube[r][anti_c] = temp[r + 6]
 
-        self.cube[3:6, 0:3] = np.rot90(self.cube[3:6, 0:3])
-        if dir == 'down':
-            for _ in range(2):
-                self.cube[3:6, 0:3] = np.rot90(self.cube[3:6, 0:3])
+        if slot == 'left':
+            self.cube[3:6, 0:3] = np.rot90(self.cube[3:6, 0:3])
+            if dir == 'down':
+                self.cube[3:6, 0:3] = np.rot90(self.cube[3:6, 0:3], k=2)
+        elif slot == 'right':
+            self.cube[3:6, 6:9] = np.rot90(self.cube[3:6, 6:9])
+            if dir == 'up':
+                self.cube[3:6, 6:9] = np.rot90(self.cube[3:6, 6:9], k=2)
 
-    def horizontal_rotate(self, slot):
-        pass
+    def horizontal_rotate(self, slot, dir):
+        """
+
+        """
+        if slot != 'top' and slot != 'middle' and slot != 'bottom':
+            raise
+
+        if dir != 'left' and dir != 'right':
+            raise
+
+        r = 3 if slot == 'top' else 4 if slot == 'middle' else 5
+        c = -3 if dir == 'right' else 3
+        temp = np.concatenate((self.cube[r, c:], self.cube[r, :c]))
+
+        self.cube[r, :] = temp
