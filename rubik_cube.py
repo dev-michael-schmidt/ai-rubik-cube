@@ -1,30 +1,13 @@
 import numpy as np
-from termcolor import colored
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-class RubiksCube:
+class RubikCube:
 
     def __init__(self):
-        self.cube = [['.' for _ in range(12)] for _ in range(9)]
+        self.cube = [[' ' for _ in range(12)] for _ in range(9)]
         self.cube = np.array(self.cube)
         for r in range(3):
-            for c in range(3):
-                self.cube[r][c] = ' '
-
             for c in range(3, 6):
                 self.cube[r][c] = 'W'
-
-            for c in range(6, 12):
-                self.cube[r][c] = ' '
 
         for r in range(3, 6):
             for c in range(3):
@@ -40,14 +23,8 @@ class RubiksCube:
                 self.cube[r][c] = 'Y'
 
         for r in range(6, 9):
-            for c in range(3):
-                self.cube[r][c] = ' '
-
             for c in range(3, 6):
                 self.cube[r][c] = 'O'
-
-            for c in range(6, 12):
-                self.cube[r][c] = ' '
 
     def __str__(self):
         s = ''
@@ -143,3 +120,21 @@ class RubiksCube:
                 self.cube[2:7, 2:7] = np.rot90(self.cube[2:7, 2:7], k=3)
             else:
                 self.cube[2:7, 2:7] = np.rot90(self.cube[2:7, 2:7])
+
+        else:
+            # no copy, refence?
+            temp = np.array([[' ' for _ in range(5)] for _ in range(5)])
+            temp[1:4, :4] = np.array(self.cube[3:6, 8:12])
+            temp[0, 1:4] = np.array(np.flip(self.cube[0, 3:6]))
+            temp[1:4, 4] = np.array(self.cube[3:6, 0])
+            temp[4, 1:4] = np.array(np.flip(self.cube[8, 3:6]))
+
+            if dir == 'clockwise':
+                temp = np.rot90(temp, k=3)
+            else:
+                temp = np.rot90(temp)
+
+            self.cube[3:6, 8:12] = temp[1:4, :4]
+            self.cube[0, 3:6] = temp[4, 1:4]
+            self.cube[3:6, 0] = temp[1:4, 4]
+            self.cube[8, 3:6] = np.flip(temp[0, 1:4])
