@@ -138,15 +138,8 @@ class RubiksCube:
         if dir != 'clockwise' and dir != 'anti-clockwise':
             raise
 
-        edges = [
-            np.array(self.cube[2, 3:6]), np.array(self.cube[3:6, 6]),
-            np.array(self.cube[6, 3:6]), np.array(self.cube[3:6, 2])
-        ]
-
         if slot == 'front':
             if dir == 'clockwise':
-                self.cube[2, 3:6] = np.flip(edges[3])
-                self.cube[3:6, 6] = edges[0]
-                self.cube[6, 3:6] = np.flip(edges[1])
-                self.cube[3:6, 2] = edges[2]
-                self.cube[3:6, 3:6] = np.rot90(self.cube[3:6, 3:6], k=3)
+                self.cube[2:7, 2:7] = np.rot90(self.cube[2:7, 2:7], k=3)
+            else:
+                self.cube[2:7, 2:7] = np.rot90(self.cube[2:7, 2:7])
