@@ -16,12 +16,15 @@ for _ in range(3):
 
 for _ in range(4):
     r.y_rotate('left', 'up')
+    r.z_rotate('front', 'clockwise')
     r.y_rotate('left', 'up')
     r.x_rotate('top', 'right')
 
-for _ in range(5):
+for _ in range(8):
+    r.z_rotate('front', 'anti-clockwise')
     r.y_rotate('left', 'up')
     r.x_rotate('top', 'right')
+    r.z_rotate('front', 'clockwise')
     r.y_rotate('right', 'down')
 r.x_rotate('bottom', 'left')
 print(r)
