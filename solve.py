@@ -1,6 +1,6 @@
-from rubiks_cube import RubiksCube
+from rubik_cube import RubikCube
 
-r = RubiksCube()
+r = RubikCube()
 
 
 r.y_rotate('left', 'down')
@@ -19,6 +19,8 @@ for _ in range(4):
     r.z_rotate('front', 'clockwise')
     r.y_rotate('left', 'up')
     r.x_rotate('top', 'right')
+    r.x_rotate('top', 'right')
+    r.z_rotate('back', 'clockwise')
 
 for _ in range(8):
     r.z_rotate('front', 'anti-clockwise')
@@ -26,8 +28,9 @@ for _ in range(8):
     r.x_rotate('top', 'right')
     r.z_rotate('front', 'clockwise')
     r.y_rotate('right', 'down')
+    r.z_rotate('back', 'anti-clockwise')
 r.x_rotate('bottom', 'left')
 print(r)
 print()
-r.z_rotate('front', 'clockwise')
+r.z_rotate('back', 'clockwise')
 print(r)
