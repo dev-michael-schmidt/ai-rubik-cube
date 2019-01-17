@@ -129,12 +129,26 @@ class RubikCube:
             temp[1:4, 4] = np.array(self.cube[3:6, 0])
             temp[4, 1:4] = np.array(np.flip(self.cube[8, 3:6]))
 
-            if dir == 'clockwise':
-                temp = np.rot90(temp, k=3)
-            else:
-                temp = np.rot90(temp)
+            temp = np.rot90(temp, k=3) if dir == 'clockwise' else np.rot90(temp)
 
             self.cube[3:6, 8:12] = temp[1:4, :4]
-            self.cube[0, 3:6] = temp[4, 1:4]
+            self.cube[8, 3:6] = np.flip(temp[4, 1:4])
             self.cube[3:6, 0] = temp[1:4, 4]
-            self.cube[8, 3:6] = np.flip(temp[0, 1:4])
+            self.cube[0, 3:6] = np.flip(temp[0, 1:4])
+
+    def heuristic1(self):
+        """
+        For each cubie, compute the minimum number of moves required to 
+        correctly position and orient it, and sum these values over all cubies.
+        Unfortunately, to be admissible, this value has to be divided by 8,
+        since every twist moves 8 cubies.
+        """
+        pass
+
+    def heuristic2(self):
+        """
+        A better heuristic is to take the maximum of the sum of Manhattan
+        distances of the corner cubies, divided by four, and the maximum of the
+        sum of edge cubies divided by 4.
+        """
+        pass
