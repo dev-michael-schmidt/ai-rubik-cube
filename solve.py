@@ -14,7 +14,7 @@ for _ in range(3):
     print(r)
     print()
 
-for _ in range(4):
+for _ in range(7):
     r.y_rotate('left', 'up')
     r.z_rotate('front', 'clockwise')
     r.y_rotate('left', 'up')
@@ -22,7 +22,7 @@ for _ in range(4):
     r.x_rotate('top', 'right')
     r.z_rotate('back', 'clockwise')
 
-for _ in range(8):
+for _ in range(32):
     r.z_rotate('front', 'anti-clockwise')
     r.y_rotate('left', 'up')
     r.x_rotate('top', 'right')

@@ -138,7 +138,7 @@ class RubikCube:
 
     def heuristic1(self):
         """
-        For each cubie, compute the minimum number of moves required to 
+        For each cubie, compute the minimum number of moves required to
         correctly position and orient it, and sum these values over all cubies.
         Unfortunately, to be admissible, this value has to be divided by 8,
         since every twist moves 8 cubies.
