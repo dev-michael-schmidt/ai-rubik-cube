@@ -12,34 +12,31 @@ class RubikCube:
             for c_idx in range(3, 6):
                 self.cube[r_idx][c_idx] = 'W'
 
-        for r in range(3, 6):
-            for c in range(3):
-                self.cube[r][c] = 'R'
+        for _r in range(3, 6):
+            for _c in range(3):
+                self.cube[_r][_c] = 'R'
 
-            for c in range(3, 6):
-                self.cube[r][c] = 'B'
+            for _c in range(3, 6):
+                self.cube[_r][_c] = 'B'
 
-            for c in range(6, 9):
-                self.cube[r][c] = 'G'
+            for _c in range(6, 9):
+                self.cube[_r][_c] = 'G'
 
-            for c in range(9, 12):
-                self.cube[r][c] = 'Y'
+            for _c in range(9, 12):
+                self.cube[_r][_c] = 'Y'
 
-        for r in range(6, 9):
-            for c in range(3, 6):
-                self.cube[r][c] = 'O'
+        for _r in range(6, 9):
+            for _c in range(3, 6):
+                self.cube[_r][_c] = 'O'
 
     def __str__(self):
         res = ''
-        for r_idx in range(9):
-            row = self.cube[r_idx][0]
-            for c_idx in range(1, 12):
-                row = '{} {}'.format(row, self.cube[r_idx][c_idx])
+        for _r in range(9):
+            row = self.cube[_r][0]
+            for _c in range(1, 12):
+                row = '{} {}'.format(row, self.cube[_r][_c])
 
-            if r_idx:
-                res = '{}\n{}'.format(res, row)
-            else:
-                res = row
+            res = '{}\n{}'.format(res, row) if _r else row
 
         return res
 
@@ -62,17 +59,17 @@ class RubikCube:
 
         # NOTE: probably a bug on rotations for right most group on 3x6 and 9x12 (np.rot90)??
 
-        temp = [self.cube[r_idx][col] for r_idx in range(9)]
-        for r_idx in range(3, 6):
-            temp.append(self.cube[r_idx][anti_col])
+        temp = [self.cube[_r][col] for _r in range(9)]
+        for _r in range(3, 6):
+            temp.append(self.cube[_r][anti_col])
 
         temp = temp[3:] + temp[:3] if direction == 'up' else temp[-3:] + temp[:-3]
 
-        for r_idx in range(9):
-            self.cube[r_idx][col] = temp[r_idx]
+        for _r in range(9):
+            self.cube[_r][col] = temp[_r]
 
-        for r_idx in range(3, 6):
-            self.cube[r_idx][anti_col] = temp[r_idx + 6]
+        for _r in range(3, 6):
+            self.cube[_r][anti_col] = temp[_r + 6]
 
         if slot == 'left':
             self.cube[3:6, 0:3] = np.rot90(self.cube[3:6, 0:3])
@@ -83,47 +80,46 @@ class RubikCube:
             if direction == 'up':
                 self.cube[3:6, 6:9] = np.rot90(self.cube[3:6, 6:9], k=2)
 
-    def x_rotate(self, slot, dir):
+    def x_rotate(self, slot, direction):
         """
-
+        I am a docstring.
         """
-        if slot != 'top' and slot != 'bottom':
+        if slot not in ('top', 'bottom'):
             raise
 
-        if dir != 'left' and dir != 'right':
+        if direction not in ('left', 'right'):
             raise
 
-        r = 3 if slot == 'top' else 4 if slot == 'middle' else 5
-        c = -3 if dir == 'right' else 3
-        self.cube[r, :] = np.concatenate((self.cube[r, c:], self.cube[r, :c]))
+        _r = 3 if slot == 'top' else 4 if slot == 'middle' else 5
+        _c = -3 if direction == 'right' else 3
+        self.cube[_r, :] = np.concatenate((self.cube[_r, _c:], self.cube[_r, :_c]))
 
         if slot == 'top':
-            if dir == 'left':
+            if direction == 'left':
                 self.cube[0:3, 3:6] = np.rot90(self.cube[0:3, 3:6], k=3)
             else:
                 self.cube[0:3, 3:6] = np.rot90(self.cube[0:3, 3:6])
-        elif slot == 'bottom':
-            if dir == 'left':
+        else:
+            if direction == 'left':
                 self.cube[6:9, 3:6] = np.rot90(self.cube[6:9, 3:6])
             else:
                 self.cube[6:9, 3:6] = np.rot90(self.cube[6:9, 3:6], k=3)
 
-    def z_rotate(self, slot, dir):
+    def z_rotate(self, slot, direction):
         """
-
+        I am a docstring.
         """
-        if slot != 'front' and slot != 'back':
+        if slot not in ('front', 'back'):
             raise
 
-        if dir != 'clockwise' and dir != 'anti-clockwise':
+        if direction not in ('clockwise', 'anti-clockwise'):
             raise
 
         if slot == 'front':
-            if dir == 'clockwise':
+            if direction == 'clockwise':
                 self.cube[2:7, 2:7] = np.rot90(self.cube[2:7, 2:7], k=3)
             else:
                 self.cube[2:7, 2:7] = np.rot90(self.cube[2:7, 2:7])
-
         else:
             # no copy, refence?
             temp = np.array([[' ' for _ in range(5)] for _ in range(5)])
@@ -132,7 +128,7 @@ class RubikCube:
             temp[1:4, 4] = np.array(self.cube[3:6, 0])
             temp[4, 1:4] = np.array(np.flip(self.cube[8, 3:6]))
 
-            temp = np.rot90(temp, k=3) if dir == 'clockwise' else np.rot90(temp)
+            temp = np.rot90(temp, k=3) if direction == 'clockwise' else np.rot90(temp)
 
             self.cube[3:6, 8:12] = temp[1:4, :4]
             self.cube[8, 3:6] = np.flip(temp[4, 1:4])
@@ -146,7 +142,7 @@ class RubikCube:
         Unfortunately, to be admissible, this value has to be divided by 8,
         since every twist moves 8 cubies.
         """
-        pass
+        return self
 
     def heuristic2(self):
         """
@@ -154,4 +150,4 @@ class RubikCube:
         distances of the corner cubies, divided by four, and the maximum of the
         sum of edge cubies divided by 4.
         """
-        pass
+        return self
