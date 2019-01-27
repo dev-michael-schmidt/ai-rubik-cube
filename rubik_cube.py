@@ -109,6 +109,7 @@ class RubikCube:
         """
         I am a docstring.
         """
+
         if slot not in ('front', 'back'):
             raise
 
