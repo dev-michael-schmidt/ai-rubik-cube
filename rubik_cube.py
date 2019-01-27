@@ -47,10 +47,10 @@ class RubikCube:
         :dir:   str     up, down
         """
 
-        if slot not in set({'left', 'right'}):
+        if slot not in ('left', 'right'):
             raise
 
-        if direction not in set({'up', 'down'}):
+        if direction not in ('up', 'down'):
             raise
 
         temp = [] # IDEA: using np slicing below ??
@@ -84,10 +84,10 @@ class RubikCube:
         """
         I am a docstring.
         """
-        if slot not in set({'top', 'bottom'}):
+        if slot not in ('top', 'bottom'):
             raise
 
-        if direction not in set({'left', 'right'}):
+        if direction not in ('left', 'right'):
             raise
 
         _r = 3 if slot == 'top' else 4 if slot == 'middle' else 5
@@ -109,11 +109,10 @@ class RubikCube:
         """
         I am a docstring.
         """
-
-        if slot not in set({'front', 'back'}):
+        if slot not in ('front', 'back'):
             raise
 
-        if direction not in set({'clockwise', 'anti-clockwise'}):
+        if direction not in ('clockwise', 'anti-clockwise'):
             raise
 
         if slot == 'front':
