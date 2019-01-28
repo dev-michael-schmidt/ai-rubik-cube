@@ -22,7 +22,7 @@ class RubikCube:
         self.cube = [[' ' for _ in range(12)] for _ in range(9)]
         self.cube = np.array(self.cube)
 
-        self.colors = ('W', 'B', 'Y', 'G', 'O', 'R')
+        self.colors = ('W', 'G', 'R', 'B', 'O', 'Y')
 
         for _r in range(3):
             for _c in range(3, 6):
@@ -180,7 +180,7 @@ class RubikCube:
             temp[1:4, 4] = np.array(self.cube[3:6, 0])
             temp[4, 1:4] = np.array(np.flip(self.cube[8, 3:6]))
 
-            temp = np.rot90(temp, k=3) if direction == 'clockwise' else np.rot90(temp)
+            temp = np.rot90(temp, k=3) if direction == 'anti-clockwise' else np.rot90(temp)
 
             self.cube[3:6, 8:12] = temp[1:4, :4]
             self.cube[8, 3:6] = np.flip(temp[4, 1:4])
