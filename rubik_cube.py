@@ -52,11 +52,16 @@ class RubikCube:
 
         return res
 
-    def scramble(self, moves=200):
+    def scramble(self, moves=5000):
         """
+        Scramble a cube by randomly rotating sides using built-in rotate methods
 
+        :moves:     int     (Optional)  The number of roations to perform
         """
-        rots = {0: self.x_rotate, 1: self.y_rotate, 2: self.z_rotate}
+        rot_functions = {
+            0: self.x_rotate,
+            1: self.y_rotate,
+            2: self.z_rotate}
 
         params = {
             0: ['top', 'left'],
@@ -70,29 +75,27 @@ class RubikCube:
             8: ['front', 'clockwise'],
             9: ['front', 'anti-clockwise'],
             10: ['back', 'clockwise'],
-            11: ['back', 'anti-clockwise']
-        }
+            11: ['back', 'anti-clockwise']}
 
-        idx = [random.randint(0, len(rots) - 1) for _ in range(moves)]
+        actions = [random.randint(0, len(rot_functions) - 1) for _ in range(moves)]
+        args = [actions[i] * 4 + random.randint(0, 3) for i in range(moves)]
 
-        func = [rots[num] for num in idx]
-        args = [idx[i] * 4 + random.randint(0, 3) for i in range(moves)]
+        rotations = [rot_functions[i] for i in actions]
+        slots = [params[args[i]][0] for i in range(moves)]
+        directions = [params[args[i]][1] for i in range(moves)]
 
-        arg1 = [params[args[i]][0] for i in range(moves)]
-        arg2 = [params[args[i]][1] for i in range(moves)]
-
-        for rot, arg1, arg2 in zip(func, arg1, arg2):
-            rot(arg1, arg2)
+        for rotation, slot, direction in zip(rotations, slots, directions):
+            rotation(slot, direction)
 
     def x_rotate(self, slot, direction):
         """
         I am a docstring.
         """
         if slot not in {'top', 'bottom'}:
-            raise
+            raise ValueError('slot arg must be top/bottom, not `{}`'.format(slot))
 
         if direction not in {'left', 'right'}:
-            raise
+            raise ValueError('direction arg must be left/right, not `{}`'.format(direction))
 
         _r = 3 if slot == 'top' else 4 if slot == 'middle' else 5
         _c = -3 if direction == 'right' else 3
@@ -109,8 +112,6 @@ class RubikCube:
             else:
                 self.cube[6:9, 3:6] = np.rot90(self.cube[6:9, 3:6], k=3)
 
-
-
     def y_rotate(self, slot, direction):
         """
 
@@ -118,11 +119,12 @@ class RubikCube:
         :dir:   str     up, down
         """
 
+
         if slot not in {'left', 'right'}:
-            raise
+            raise ValueError('slot arg must be left/right, not `{}`'.format(slot))
 
         if direction not in {'up', 'down'}:
-            raise
+            raise ValueError('direction arg must be up/down, not `{}`'.format(direction))
 
         temp = [] # IDEA: using np slicing below ??
         col = 3 if slot == 'left' else 5
@@ -156,10 +158,10 @@ class RubikCube:
         I am a docstring.
         """
         if slot not in {'front', 'back'}:
-            raise
+            raise ValueError('slot arg must be front/back, not `{}`'.format(slot))
 
         if direction not in {'clockwise', 'anti-clockwise'}:
-            raise
+            raise ValueError('direction arg must be clockwise/anti-clockwise, not `{}`'.format(direction))
 
         if slot == 'front':
             if direction == 'clockwise':
@@ -199,27 +201,33 @@ class RubikCube:
         center_r, center_c = row + 1, col + 1
 
         corners = set({
-            (row+2, col),
-            (row+2, col+2),
+            (row, col),
             (row, col+2),
-            (row, col)
+            (row+2, col+2),
+            (row+2, col)
         })
 
-        corners
+        #corners
+        sum = 0
 
         for cubie in corners:
+            print('checking :', self.cube[cubie[0]][cubie[1]], self.cube[center_r][center_c], end=' ')
             if self.cube[cubie[0]][cubie[1]] != self.cube[center_r][center_c]:
-                vert, horz = 0, 0
-                for h in range(2):
-                    center_x += 3
-                    center_x %= 8
-                    print(center_x)
+                center_r += 6
+                if self.cube[center_r][center_c] == self.cube[cubie[0]][cubie[1]]:
+                    sum += 2
+                else:
+                    sum += 1
+                center_r -= 6
+            print(sum)
 
 
 
 
 
-        return
+
+
+        return sum
 
     def heuristic2(self):
         """
