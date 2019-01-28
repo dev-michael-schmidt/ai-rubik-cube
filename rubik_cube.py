@@ -76,8 +76,8 @@ class RubikCube:
         idx = [random.randint(0, len(rots) - 1) for _ in range(moves)]
 
         func = [rots[num] for num in idx]
-
         args = [idx[i] * 4 + random.randint(0, 3) for i in range(moves)]
+
         arg1 = [params[args[i]][0] for i in range(moves)]
         arg2 = [params[args[i]][1] for i in range(moves)]
 
