@@ -11,6 +11,8 @@ The internal representation of the rubik cube is a `numpy.ndarray()` with a `(9,
 - `RubikCube.__init__(self)` Create a new instance of a RubikCube()
 - `RubikCube.__str__(self)` Return a string of the internal representation.
 ```
+>>> rc = RubikCube()
+>>> print(rc)
         W W W
         W W W
         W W W
