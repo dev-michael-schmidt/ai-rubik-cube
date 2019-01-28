@@ -1,3 +1,7 @@
+"""
+I am a doc docstring
+"""
+
 import random
 import numpy as np
 
@@ -195,39 +199,11 @@ class RubikCube:
         #RBGY
         # O
 
+        moves = 0
+        moves = self.check_white(moves)
 
-        # W
-        row, col = 0, 3
-        center_r, center_c = row + 1, col + 1
-
-        corners = set({
-            (row, col),
-            (row, col+2),
-            (row+2, col+2),
-            (row+2, col)
-        })
-
-        #corners
-        sum = 0
-
-        for cubie in corners:
-            print('checking :', self.cube[cubie[0]][cubie[1]], self.cube[center_r][center_c], end=' ')
-            if self.cube[cubie[0]][cubie[1]] != self.cube[center_r][center_c]:
-                center_r += 6
-                if self.cube[center_r][center_c] == self.cube[cubie[0]][cubie[1]]:
-                    sum += 2
-                else:
-                    sum += 1
-                center_r -= 6
-            print(sum)
-
-
-
-
-
-
-
-        return sum
+        # moves /= 8.0
+        return moves
 
     def heuristic2(self):
         """
@@ -240,3 +216,20 @@ class RubikCube:
                     O
         """
         return self
+
+    def check_white(self, moves):
+        """
+        I am a doc string
+        """
+        row, col = 0, 3
+
+        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
+        sides = set({(row, col+1), (row+1, col), (row+1, col+1), (row+2, col+2)})
+
+        for cubie in corners:
+            if self.cube[cubie[0]][cubie[1]] != 'W':
+                moves += 2 if self.cube[row+7][col+1] == self.cube[cubie[0]][cubie[1]] else 1
+
+        for cubie in sides:
+            print(cubie)
+        return moves
