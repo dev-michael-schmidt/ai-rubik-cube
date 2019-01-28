@@ -1,4 +1,13 @@
+import random
 import numpy as np
+
+class Cubie:
+    """
+
+    """
+    def __init__(self):
+        pass
+
 
 class RubikCube:
     """
@@ -8,26 +17,29 @@ class RubikCube:
     def __init__(self):
         self.cube = [[' ' for _ in range(12)] for _ in range(9)]
         self.cube = np.array(self.cube)
-        for r_idx in range(3):
-            for c_idx in range(3, 6):
-                self.cube[r_idx][c_idx] = 'W'
+
+        self.colors = ('W', 'B', 'Y', 'G', 'O', 'R')
+
+        for _r in range(3):
+            for _c in range(3, 6):
+                self.cube[_r][_c] = self.colors[0]
 
         for _r in range(3, 6):
             for _c in range(3):
-                self.cube[_r][_c] = 'R'
+                self.cube[_r][_c] = self.colors[1]
 
             for _c in range(3, 6):
-                self.cube[_r][_c] = 'B'
+                self.cube[_r][_c] = self.colors[2]
 
             for _c in range(6, 9):
-                self.cube[_r][_c] = 'G'
+                self.cube[_r][_c] = self.colors[3]
 
             for _c in range(9, 12):
-                self.cube[_r][_c] = 'Y'
+                self.cube[_r][_c] = self.colors[4]
 
         for _r in range(6, 9):
             for _c in range(3, 6):
-                self.cube[_r][_c] = 'O'
+                self.cube[_r][_c] = self.colors[5]
 
     def __str__(self):
         res = ''
@@ -40,6 +52,65 @@ class RubikCube:
 
         return res
 
+    def scramble(self, moves=200):
+        """
+
+        """
+        rots = {0: self.x_rotate, 1: self.y_rotate, 2: self.z_rotate}
+
+        params = {
+            0: ['top', 'left'],
+            1: ['top', 'right'],
+            2: ['bottom', 'left'],
+            3: ['bottom', 'right'],
+            4: ['left', 'up'],
+            5: ['left', 'down'],
+            6: ['right', 'up'],
+            7: ['right', 'down'],
+            8: ['front', 'clockwise'],
+            9: ['front', 'anti-clockwise'],
+            10: ['back', 'clockwise'],
+            11: ['back', 'anti-clockwise']
+        }
+
+        idx = [random.randint(0, len(rots) - 1) for _ in range(moves)]
+
+        func = [rots[num] for num in idx]
+
+        args = [idx[i] * 4 + random.randint(0, 3) for i in range(moves)]
+        arg1 = [params[args[i]][0] for i in range(moves)]
+        arg2 = [params[args[i]][1] for i in range(moves)]
+
+        for rot, arg1, arg2 in zip(func, arg1, arg2):
+            rot(arg1, arg2)
+
+    def x_rotate(self, slot, direction):
+        """
+        I am a docstring.
+        """
+        if slot not in {'top', 'bottom'}:
+            raise
+
+        if direction not in {'left', 'right'}:
+            raise
+
+        _r = 3 if slot == 'top' else 4 if slot == 'middle' else 5
+        _c = -3 if direction == 'right' else 3
+        self.cube[_r, :] = np.concatenate((self.cube[_r, _c:], self.cube[_r, :_c]))
+
+        if slot == 'top':
+            if direction == 'left':
+                self.cube[0:3, 3:6] = np.rot90(self.cube[0:3, 3:6], k=3)
+            else:
+                self.cube[0:3, 3:6] = np.rot90(self.cube[0:3, 3:6])
+        else:
+            if direction == 'left':
+                self.cube[6:9, 3:6] = np.rot90(self.cube[6:9, 3:6])
+            else:
+                self.cube[6:9, 3:6] = np.rot90(self.cube[6:9, 3:6], k=3)
+
+
+
     def y_rotate(self, slot, direction):
         """
 
@@ -47,10 +118,10 @@ class RubikCube:
         :dir:   str     up, down
         """
 
-        if slot not in ('left', 'right'):
+        if slot not in {'left', 'right'}:
             raise
 
-        if direction not in ('up', 'down'):
+        if direction not in {'up', 'down'}:
             raise
 
         temp = [] # IDEA: using np slicing below ??
@@ -80,39 +151,14 @@ class RubikCube:
             if direction == 'up':
                 self.cube[3:6, 6:9] = np.rot90(self.cube[3:6, 6:9], k=2)
 
-    def x_rotate(self, slot, direction):
-        """
-        I am a docstring.
-        """
-        if slot not in ('top', 'bottom'):
-            raise
-
-        if direction not in ('left', 'right'):
-            raise
-
-        _r = 3 if slot == 'top' else 4 if slot == 'middle' else 5
-        _c = -3 if direction == 'right' else 3
-        self.cube[_r, :] = np.concatenate((self.cube[_r, _c:], self.cube[_r, :_c]))
-
-        if slot == 'top':
-            if direction == 'left':
-                self.cube[0:3, 3:6] = np.rot90(self.cube[0:3, 3:6], k=3)
-            else:
-                self.cube[0:3, 3:6] = np.rot90(self.cube[0:3, 3:6])
-        else:
-            if direction == 'left':
-                self.cube[6:9, 3:6] = np.rot90(self.cube[6:9, 3:6])
-            else:
-                self.cube[6:9, 3:6] = np.rot90(self.cube[6:9, 3:6], k=3)
-
     def z_rotate(self, slot, direction):
         """
         I am a docstring.
         """
-        if slot not in ('front', 'back'):
+        if slot not in {'front', 'back'}:
             raise
 
-        if direction not in ('clockwise', 'anti-clockwise'):
+        if direction not in {'clockwise', 'anti-clockwise'}:
             raise
 
         if slot == 'front':
@@ -142,12 +188,47 @@ class RubikCube:
         Unfortunately, to be admissible, this value has to be divided by 8,
         since every twist moves 8 cubies.
         """
-        return self
+
+        # W
+        #RBGY
+        # O
+
+
+        # W
+        row, col = 0, 3
+        center_r, center_c = row + 1, col + 1
+
+        corners = set({
+            (row+2, col),
+            (row+2, col+2),
+            (row, col+2),
+            (row, col)
+        })
+
+        corners
+
+        for cubie in corners:
+            if self.cube[cubie[0]][cubie[1]] != self.cube[center_r][center_c]:
+                vert, horz = 0, 0
+                for h in range(2):
+                    center_x += 3
+                    center_x %= 8
+                    print(center_x)
+
+
+
+
+
+        return
 
     def heuristic2(self):
         """
         A better heuristic is to take the maximum of the sum of Manhattan
         distances of the corner cubies, divided by four, and the maximum of the
         sum of edge cubies divided by 4.
+
+                    W
+                R   B   G   Y
+                    O
         """
         return self
