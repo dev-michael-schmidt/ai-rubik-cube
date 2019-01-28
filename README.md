@@ -10,18 +10,20 @@ The internal representation of the rubik cube is a `numpy.ndarray()` with a `(9,
 
 - `RubikCube.__init__(self)` Create a new instance of a RubikCube()
 - `RubikCube.__str__(self)` Return a string of the internal representation.
+
 ```
 >>> rc = RubikCube()
 >>> print(rc)
-        W W W
-        W W W
-        W W W
-B B B Y Y Y G G G O O O
-B B B Y Y Y G G G O O O
-B B B Y Y Y G G G O O O
-        R R R
-        R R R
-        R R R
+      W W W
+      W W W
+      W W W
+G G G R R R B B B O O O
+G G G R R R B B B O O O
+G G G R R R B B B O O O
+      Y Y Y
+      Y Y Y
+      Y Y Y
+>>>
 ```
 - `RubikCube.scramble(self, moves=5000)` Scramble the rubik cube.
 - `RubikCube.x_rotate(self, slot, direction)` perform a single rotation on the x axis.
