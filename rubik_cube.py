@@ -56,7 +56,7 @@ class RubikCube:
 
         return res
 
-    def scramble(self, moves=5000):
+    def scramble(self, moves=10000):
         """
         Scramble a cube by randomly rotating sides using built-in rotate methods
 
@@ -95,6 +95,7 @@ class RubikCube:
         """
         I am a docstring.
         """
+
         if slot not in {'top', 'bottom'}:
             raise ValueError('slot arg must be top/bottom, not `{}`'.format(slot))
 
@@ -122,7 +123,6 @@ class RubikCube:
         :slot:  str     left, right
         :dir:   str     up, down
         """
-
 
         if slot not in {'left', 'right'}:
             raise ValueError('slot arg must be left/right, not `{}`'.format(slot))
@@ -219,17 +219,72 @@ class RubikCube:
 
     def check_white(self, moves):
         """
-        I am a doc string
+        HEURISTIC1:
+
+        Moves estimated to place non-white cubies into respective locations 
         """
+
         row, col = 0, 3
 
         corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-        sides = set({(row, col+1), (row+1, col), (row+1, col+1), (row+2, col+2)})
+        sides_x = set({(row+1, col), (row+1, col+2)})
+        sides_y = set({(row, col+1), (row+2, col+1)})
 
         for cubie in corners:
             if self.cube[cubie[0]][cubie[1]] != 'W':
                 moves += 2 if self.cube[row+7][col+1] == self.cube[cubie[0]][cubie[1]] else 1
 
-        for cubie in sides:
-            print(cubie)
+        for cubie in sides_x:
+            if self.cube[cubie[0]][cubie[1]] != 'W':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
+
+
+        for cubie in sides_y:
+            if self.cube[cubie[0]][cubie[1]] != 'W':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
+
         return moves
+
+
+    def template_white(self, moves):
+            def check_white(self, moves):
+                """
+                I am a doc string
+                """
+
+                row, col = 0, 3
+
+                corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
+                sides_x = set({(row+1, col), (row+1, col+2)})
+                sides_y = set({(row, col+1), (row+2, col+1)})
+
+                for cubie in corners:
+                    if self.cube[cubie[0]][cubie[1]] != 'W':
+                        moves += 2 if self.cube[row+7][col+1] == self.cube[cubie[0]][cubie[1]] else 1
+
+                for cubie in sides_x:
+                    if self.cube[cubie[0]][cubie[1]] != 'W':
+                        if self.cube[cubie[0]][cubie[1]] in ('Y', 'G', 'B'):
+                            moves += 2
+
+                        if self.cube[cubie[0]][cubie[1]] in ('R', 'O'):
+                            moves += 1
+
+                for cubie in sides_y:
+                    print(cubie, self.cube[cubie[0]][cubie[1]])
+                    if self.cube[cubie[0]][cubie[1]] != 'W':
+                        if self.cube[cubie[0]][cubie[1]] in ('Y', 'R', 'O'):
+                            moves += 2
+
+                        if self.cube[cubie[0]][cubie[1]] in ('B', 'G'):
+                            moves += 1
+
+                return moves
+
+
+
+rc = RubikCube()
+rc.scramble()
+print(rc)
+moves = 0
+rc.check_white(moves)
