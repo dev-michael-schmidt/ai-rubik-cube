@@ -189,21 +189,19 @@ class RubikCube:
 
     def heuristic1(self):
         """
-        For each cubie, compute the minimum number of moves required to
-        correctly position and orient it, and sum these values over all cubies.
-        Unfortunately, to be admissible, this value has to be divided by 8,
-        since every twist moves 8 cubies.
+        For each cubie, compute the minimum number of moves required to correctly position and
+        orient it, and sum these values over all cubies. Unfortunately, to be admissible, this value
+        has to be divided by 8, since every twist moves 8 cubies.
         """
 
-        # W
-        #RBGY
-        # O
-
         moves = 0
-        #moves = self.check_white(moves)
-        moves = self.check_yellow(moves)
+        moves = self.h1_red(moves)
+        moves = self.h1_blue(moves)
+        moves = self.h1_green(moves)
+        moves = self.h1_white(moves)
+        moves = self.h1_yellow(moves)
+        moves = self.h1_orange(moves)
 
-        # moves /= 8.0
         return moves
 
     def heuristic2(self):
@@ -218,7 +216,7 @@ class RubikCube:
         """
         return self
 
-    def check_white(self, moves):
+    def h1_white(self, moves):
         """
         HEURISTIC1:
 
@@ -245,7 +243,7 @@ class RubikCube:
 
         return moves
 
-    def check_yellow(self, moves):
+    def h1_yellow(self, moves):
         """
         HEURISTIC1:
 
@@ -266,52 +264,123 @@ class RubikCube:
             if self.cube[cubie[0]][cubie[1]] != 'Y':
                 moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
 
-
         for cubie in sides_y:
             if self.cube[cubie[0]][cubie[1]] != 'Y':
                 moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
 
         return moves
 
-
-    def template_white(self, moves):
+    def h1_red(self, moves):
         """
-        I am a doc string
+        HEURISTIC1:
+
+        Moves estimated to place non-white cubies into respective locations
         """
 
-        row, col = 6, 3
+        row, col = 3, 3
 
         corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
         sides_x = set({(row+1, col), (row+1, col+2)})
         sides_y = set({(row, col+1), (row+2, col+1)})
 
         for cubie in corners:
-            if self.cube[cubie[0]][cubie[1]] != 'W':
-                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'Y' else 1
+            if self.cube[cubie[0]][cubie[1]] != 'R':
+                moves += .25 if self.cube[cubie[0]][cubie[1]] == 'O' else 1
 
         for cubie in sides_x:
-            if self.cube[cubie[0]][cubie[1]] != 'W':
-                if self.cube[cubie[0]][cubie[1]] in ('Y', 'G', 'B'):
-                    moves += 2
-
-                if self.cube[cubie[0]][cubie[1]] in ('R', 'O'):
-                    moves += 1
+            if self.cube[cubie[0]][cubie[1]] != 'R':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
 
         for cubie in sides_y:
-            print(cubie, self.cube[cubie[0]][cubie[1]])
-            if self.cube[cubie[0]][cubie[1]] != 'W':
-                if self.cube[cubie[0]][cubie[1]] in ('Y', 'R', 'O'):
-                    moves += 2
-
-                if self.cube[cubie[0]][cubie[1]] in ('B', 'G'):
-                    moves += 1
+            if self.cube[cubie[0]][cubie[1]] != 'R':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
 
         return moves
 
+    def h1_orange(self, moves):
+        """
+        HEURISTIC1:
 
+        estimated moves to place non-white cubies into respective locations
+        """
+
+        row, col = 3, 9
+
+        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
+        sides_x = set({(row+1, col), (row+1, col+2)})
+        sides_y = set({(row, col+1), (row+2, col+1)})
+
+        for cubie in corners:
+            if self.cube[cubie[0]][cubie[1]] != 'O':
+                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'R' else 1
+
+        for cubie in sides_x:
+            if self.cube[cubie[0]][cubie[1]] != 'O':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
+
+        for cubie in sides_y:
+            if self.cube[cubie[0]][cubie[1]] != 'O':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
+
+        return moves
+
+    def h1_blue(self, moves):
+        """
+        HEURISTIC1:
+
+        Moves estimated to place non-white cubies into respective locations
+        """
+
+        row, col = 3, 6
+
+        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
+        sides_x = set({(row+1, col), (row+1, col+2)})
+        sides_y = set({(row, col+1), (row+2, col+1)})
+
+        for cubie in corners:
+            if self.cube[cubie[0]][cubie[1]] != 'B':
+                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'G' else 1
+
+        for cubie in sides_x:
+            if self.cube[cubie[0]][cubie[1]] != 'B':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
+
+        for cubie in sides_y:
+            if self.cube[cubie[0]][cubie[1]] != 'O':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
+
+        return moves
+
+    def h1_green(self, moves):
+        """
+        HEURISTIC1:
+
+        Moves estimated to place non-white cubies into respective locations
+        """
+
+        row, col = 3, 0
+
+        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
+        sides_x = set({(row+1, col), (row+1, col+2)})
+        sides_y = set({(row, col+1), (row+2, col+1)})
+
+        for cubie in corners:
+            if self.cube[cubie[0]][cubie[1]] != 'G':
+                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'B' else 1
+
+        for cubie in sides_x:
+            if self.cube[cubie[0]][cubie[1]] != 'G':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
+
+        for cubie in sides_y:
+            if self.cube[cubie[0]][cubie[1]] != 'G':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
+
+        return moves
 
 rc = RubikCube()
+print(rc.heuristic1())
+
 rc.scramble()
-print(rc)
-moves = 0
-rc.check_yellow(moves)
+
+rc.heuristic1()
