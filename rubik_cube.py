@@ -202,7 +202,7 @@ class RubikCube:
         moves = self.h1_yellow(moves)
         moves = self.h1_orange(moves)
 
-        return moves
+        return moves / 8
 
     def heuristic2(self):
         """
@@ -346,7 +346,7 @@ class RubikCube:
                 moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
 
         for cubie in sides_y:
-            if self.cube[cubie[0]][cubie[1]] != 'O':
+            if self.cube[cubie[0]][cubie[1]] != 'B':
                 moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
 
         return moves
@@ -379,8 +379,6 @@ class RubikCube:
         return moves
 
 rc = RubikCube()
-print(rc.heuristic1())
-
-rc.scramble()
-
+rc.x_rotate('top', 'left')
+print(rc)
 rc.heuristic1()
