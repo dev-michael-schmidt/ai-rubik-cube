@@ -200,7 +200,8 @@ class RubikCube:
         # O
 
         moves = 0
-        moves = self.check_white(moves)
+        #moves = self.check_white(moves)
+        moves = self.check_yellow(moves)
 
         # moves /= 8.0
         return moves
@@ -221,7 +222,7 @@ class RubikCube:
         """
         HEURISTIC1:
 
-        Moves estimated to place non-white cubies into respective locations 
+        Moves estimated to place non-white cubies into respective locations
         """
 
         row, col = 0, 3
@@ -232,12 +233,11 @@ class RubikCube:
 
         for cubie in corners:
             if self.cube[cubie[0]][cubie[1]] != 'W':
-                moves += 2 if self.cube[row+7][col+1] == self.cube[cubie[0]][cubie[1]] else 1
+                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'Y' else 1
 
         for cubie in sides_x:
             if self.cube[cubie[0]][cubie[1]] != 'W':
                 moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
-
 
         for cubie in sides_y:
             if self.cube[cubie[0]][cubie[1]] != 'W':
@@ -245,41 +245,68 @@ class RubikCube:
 
         return moves
 
+    def check_yellow(self, moves):
+        """
+        HEURISTIC1:
+
+        Moves estimated to place non-white cubies into respective locations
+        """
+
+        row, col = 6, 3
+
+        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
+        sides_x = set({(row+1, col), (row+1, col+2)})
+        sides_y = set({(row, col+1), (row+2, col+1)})
+
+        for cubie in corners:
+            if self.cube[cubie[0]][cubie[1]] != 'Y':
+                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'W' else 1
+
+        for cubie in sides_x:
+            if self.cube[cubie[0]][cubie[1]] != 'Y':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
+
+
+        for cubie in sides_y:
+            if self.cube[cubie[0]][cubie[1]] != 'Y':
+                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
+
+        return moves
+
 
     def template_white(self, moves):
-            def check_white(self, moves):
-                """
-                I am a doc string
-                """
+        """
+        I am a doc string
+        """
 
-                row, col = 0, 3
+        row, col = 6, 3
 
-                corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-                sides_x = set({(row+1, col), (row+1, col+2)})
-                sides_y = set({(row, col+1), (row+2, col+1)})
+        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
+        sides_x = set({(row+1, col), (row+1, col+2)})
+        sides_y = set({(row, col+1), (row+2, col+1)})
 
-                for cubie in corners:
-                    if self.cube[cubie[0]][cubie[1]] != 'W':
-                        moves += 2 if self.cube[row+7][col+1] == self.cube[cubie[0]][cubie[1]] else 1
+        for cubie in corners:
+            if self.cube[cubie[0]][cubie[1]] != 'W':
+                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'Y' else 1
 
-                for cubie in sides_x:
-                    if self.cube[cubie[0]][cubie[1]] != 'W':
-                        if self.cube[cubie[0]][cubie[1]] in ('Y', 'G', 'B'):
-                            moves += 2
+        for cubie in sides_x:
+            if self.cube[cubie[0]][cubie[1]] != 'W':
+                if self.cube[cubie[0]][cubie[1]] in ('Y', 'G', 'B'):
+                    moves += 2
 
-                        if self.cube[cubie[0]][cubie[1]] in ('R', 'O'):
-                            moves += 1
+                if self.cube[cubie[0]][cubie[1]] in ('R', 'O'):
+                    moves += 1
 
-                for cubie in sides_y:
-                    print(cubie, self.cube[cubie[0]][cubie[1]])
-                    if self.cube[cubie[0]][cubie[1]] != 'W':
-                        if self.cube[cubie[0]][cubie[1]] in ('Y', 'R', 'O'):
-                            moves += 2
+        for cubie in sides_y:
+            print(cubie, self.cube[cubie[0]][cubie[1]])
+            if self.cube[cubie[0]][cubie[1]] != 'W':
+                if self.cube[cubie[0]][cubie[1]] in ('Y', 'R', 'O'):
+                    moves += 2
 
-                        if self.cube[cubie[0]][cubie[1]] in ('B', 'G'):
-                            moves += 1
+                if self.cube[cubie[0]][cubie[1]] in ('B', 'G'):
+                    moves += 1
 
-                return moves
+        return moves
 
 
 
@@ -287,4 +314,4 @@ rc = RubikCube()
 rc.scramble()
 print(rc)
 moves = 0
-rc.check_white(moves)
+rc.check_yellow(moves)
