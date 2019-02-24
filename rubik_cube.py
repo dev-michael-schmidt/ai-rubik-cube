@@ -56,6 +56,10 @@ class RubikCube:
 
         return res
 
+    def __repr__(self):
+
+        return str(self)
+
     def scramble(self, moves=10000):
         """
         Scramble a cube by randomly rotating sides using built-in rotate methods
@@ -195,14 +199,41 @@ class RubikCube:
         """
 
         moves = 0
-        moves = self.h1_red(moves)
-        moves = self.h1_blue(moves)
-        moves = self.h1_green(moves)
-        moves = self.h1_white(moves)
-        moves = self.h1_yellow(moves)
-        moves = self.h1_orange(moves)
 
-        return moves / 8
+        for row, col in [(0, 3), (0, 5), (2, 5), (2, 3)]:
+            if self.cube[row][col] != 'W':
+                moves += 2 / 8 if self.cube[row][col] == 'Y' else 1 / 8
+
+        for row, col in [(1, 3), (1, 5)]:
+            if self.cube[row][col] != 'W':
+                moves += 1 / 8 if self.cube[row][col] in ('R', 'O') else 2 / 8
+
+        for row, col in [(0, 4), (2, 4)]:
+            if self.cube[row][col] != 'W':
+                moves += 1 / 8 if self.cube[row][col] in ('B', 'G') else 2 / 8
+
+        for row, col in [(6, 3), (6, 5), (8, 5), (8, 3)]:
+            if self.cube[row][col] != 'Y':
+                moves += 2 / 8 if self.cube[row][col] == 'W' else 1 / 8
+
+        for row, col in [(7, 3), (7, 5)]:
+            if self.cube[row][col] != 'Y':
+                moves += 1 / 8 if self.cube[row][col] in ('R', 'O') else 2 / 8
+
+        for row, col in [(6, 4), (8, 4)]:
+            if self.cube[row][col] != 'Y':
+                moves += 1 / 8 if self.cube[row][col] in ('B', 'G') else 2 / 8
+
+        for row, col in [(4, 6), (4, 8)]:
+            if self.cube[row][col] != 'B':
+                moves += 1 / 8 if self.cube[row][col] in ('W', 'Y') else 2 / 8
+
+        for row, col in [(4, 0), (4, 2)]:
+            if self.cube[row][col] != 'G':
+                moves += 1 / 8 if self.cube[row][col] in ('W', 'Y') else 2 / 8
+
+        return moves
+
 
     def heuristic2(self):
         """
@@ -215,170 +246,3 @@ class RubikCube:
                     O
         """
         return self
-
-    def h1_white(self, moves):
-        """
-        HEURISTIC1:
-
-        Moves estimated to place non-white cubies into respective locations
-        """
-
-        row, col = 0, 3
-
-        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-        sides_x = set({(row+1, col), (row+1, col+2)})
-        sides_y = set({(row, col+1), (row+2, col+1)})
-
-        for cubie in corners:
-            if self.cube[cubie[0]][cubie[1]] != 'W':
-                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'Y' else 1
-
-        for cubie in sides_x:
-            if self.cube[cubie[0]][cubie[1]] != 'W':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
-
-        for cubie in sides_y:
-            if self.cube[cubie[0]][cubie[1]] != 'W':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
-
-        return moves
-
-    def h1_yellow(self, moves):
-        """
-        HEURISTIC1:
-
-        Moves estimated to place non-white cubies into respective locations
-        """
-
-        row, col = 6, 3
-
-        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-        sides_x = set({(row+1, col), (row+1, col+2)})
-        sides_y = set({(row, col+1), (row+2, col+1)})
-
-        for cubie in corners:
-            if self.cube[cubie[0]][cubie[1]] != 'Y':
-                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'W' else 1
-
-        for cubie in sides_x:
-            if self.cube[cubie[0]][cubie[1]] != 'Y':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
-
-        for cubie in sides_y:
-            if self.cube[cubie[0]][cubie[1]] != 'Y':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
-
-        return moves
-
-    def h1_red(self, moves):
-        """
-        HEURISTIC1:
-
-        Moves estimated to place non-white cubies into respective locations
-        """
-
-        row, col = 3, 3
-
-        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-        sides_x = set({(row+1, col), (row+1, col+2)})
-        sides_y = set({(row, col+1), (row+2, col+1)})
-
-        for cubie in corners:
-            if self.cube[cubie[0]][cubie[1]] != 'R':
-                moves += .25 if self.cube[cubie[0]][cubie[1]] == 'O' else 1
-
-        for cubie in sides_x:
-            if self.cube[cubie[0]][cubie[1]] != 'R':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
-
-        for cubie in sides_y:
-            if self.cube[cubie[0]][cubie[1]] != 'R':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
-
-        return moves
-
-    def h1_orange(self, moves):
-        """
-        HEURISTIC1:
-
-        estimated moves to place non-white cubies into respective locations
-        """
-
-        row, col = 3, 9
-
-        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-        sides_x = set({(row+1, col), (row+1, col+2)})
-        sides_y = set({(row, col+1), (row+2, col+1)})
-
-        for cubie in corners:
-            if self.cube[cubie[0]][cubie[1]] != 'O':
-                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'R' else 1
-
-        for cubie in sides_x:
-            if self.cube[cubie[0]][cubie[1]] != 'O':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
-
-        for cubie in sides_y:
-            if self.cube[cubie[0]][cubie[1]] != 'O':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('B', 'G') else 2
-
-        return moves
-
-    def h1_blue(self, moves):
-        """
-        HEURISTIC1:
-
-        Moves estimated to place non-white cubies into respective locations
-        """
-
-        row, col = 3, 6
-
-        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-        sides_x = set({(row+1, col), (row+1, col+2)})
-        sides_y = set({(row, col+1), (row+2, col+1)})
-
-        for cubie in corners:
-            if self.cube[cubie[0]][cubie[1]] != 'B':
-                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'G' else 1
-
-        for cubie in sides_x:
-            if self.cube[cubie[0]][cubie[1]] != 'B':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
-
-        for cubie in sides_y:
-            if self.cube[cubie[0]][cubie[1]] != 'B':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
-
-        return moves
-
-    def h1_green(self, moves):
-        """
-        HEURISTIC1:
-
-        Moves estimated to place non-white cubies into respective locations
-        """
-
-        row, col = 3, 0
-
-        corners = set({(row, col), (row, col+2), (row+2, col+2), (row+2, col)})
-        sides_x = set({(row+1, col), (row+1, col+2)})
-        sides_y = set({(row, col+1), (row+2, col+1)})
-
-        for cubie in corners:
-            if self.cube[cubie[0]][cubie[1]] != 'G':
-                moves += 2 if self.cube[cubie[0]][cubie[1]] == 'B' else 1
-
-        for cubie in sides_x:
-            if self.cube[cubie[0]][cubie[1]] != 'G':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('W', 'Y') else 2
-
-        for cubie in sides_y:
-            if self.cube[cubie[0]][cubie[1]] != 'G':
-                moves += 1 if self.cube[cubie[0]][cubie[1]] in ('R', 'O') else 2
-
-        return moves
-
-rc = RubikCube()
-rc.x_rotate('top', 'left')
-print(rc)
-rc.heuristic1()
